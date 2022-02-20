@@ -1,12 +1,7 @@
-from crypt import methods
-import os
-from flask import Flask, render_template, url_for, flash, redirect
-from forms import Registration, Login
-from dotenv import load_dotenv
-
-load_dotenv()
-app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+from flask import render_template,redirect, url_for, flash
+from flaskblog import app
+from flaskblog.forms import Registration, Login
+from flaskblog.models import User, Post
 
 posts = [
     {
@@ -46,7 +41,3 @@ def login():
 @app.route('/about')
 def about():
     return render_template('about.html', title = 'About Page')
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
