@@ -3,28 +3,15 @@ import secrets
 from PIL import Image
 from flask import render_template,redirect, url_for, flash, request
 from flaskblog import app,db, bcrypt
-from flaskblog.forms import Registration, Login, UpdateAccount
+from flaskblog.forms import Registration, Login, UpdateAccount, PostForm
 from flaskblog.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
 
-posts = [
-    {
-        'author':'Emjay',
-        'title':'Why the west rule for now',
-        'content':'Cos they kinda suck',
-        'date': '25th Jan, 2022'
-    },
-    {
-        'author':'Lesley',
-        'title':'Dave Expedition',
-        'content':'I don\'t know my self',
-        'date': '14th, Feb, 2022'
-    },
-]
 
 @app.route('/')
 @app.route('/home')
 def home():
+    posts = Post.query.all()
     return render_template('home.html', posts = posts)
 
 @app.route('/register', methods = ['GET', 'POST'])
@@ -72,7 +59,7 @@ def save_picture(form_picture):
     output_size = (125, 125)
     img.thumbnail(output_size)
     img.save(picture_path)
-
+    
     return picture_fn
 
 @app.route('/account', methods = ['GET', 'POST'])
@@ -81,7 +68,7 @@ def account():
     form =UpdateAccount()
     if form.validate_on_submit():
         if form.picture.data:
-            del current_user.img_file
+            
             picture_file = save_picture(form.picture.data)
             current_user.img_file = picture_file
         current_user.username = form.username.data
@@ -94,6 +81,19 @@ def account():
         form.email.data = current_user.email
     image_file = url_for('static', filename = f'profile_pic/{current_user.img_file}'  )
     return render_template('account.html', title='Account', image_file = image_file, form = form)
+
+@app.route('/post/new', methods = ['GET', 'POST'])
+@login_required
+def new_post():
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(title = form.title.data, content = form.content.data, author = current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash('Your post has been created!', 'success')
+        return redirect(url_for('home'))
+    return render_template('create_post.html', title ='New Post',  form=form)
+
 @app.route('/about')
 def about():
     return render_template('about.html', title = 'About Page')
