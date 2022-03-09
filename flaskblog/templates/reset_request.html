@@ -1,0 +1,28 @@
+{% extends 'layout.html'%}
+{% block content %} 
+    <div class="cross-section" style="background: white;">
+        <form method="POST" action="" >
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb4"> Reset Passowrd </legend>
+                <div class="form-group">
+                    {{ form.email.label(class='form-control-label') }}
+                    {% if form.email.errors %}
+                        {{ form.email(class='form-control form-control-lg is-invalid')}}
+                        <div class="invalid-feedback">
+                            {% for error in form.email.errors %}
+                                <spam> {{ error }}</spam>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.email(class='form-control form-control-lg')}}
+                    {% endif %}
+                </div>
+              
+            <div class="form-group">
+                {{ form.submit(class='btn btn-outline-info') }}
+            </div>
+        </form>
+    </div>
+    
+{% endblock content %}
