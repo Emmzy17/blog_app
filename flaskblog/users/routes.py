@@ -1,3 +1,4 @@
+from crypt import methods
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_login import login_user, login_required, current_user, logout_user
 from flaskblog.models import User, Post
@@ -63,7 +64,7 @@ def account():
     image_file = url_for('static', filename = f'profile_pic/{current_user.img_file}'  )
     return render_template('account.html', title='Account', image_file = image_file, form = form)
 
-@users.route('/user/<string:username>')
+@users.route('/user/<string:username>', methods=['GET', 'POST'])
 def user_posts(username):
     page = request.args.get('page', 1, type=int)
     user = User.query.filter_by(username=username).first_or_404()
