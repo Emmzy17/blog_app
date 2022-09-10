@@ -1,1 +1,1 @@
-# Kareen - Social Blogging Platform For Unconventional Minds  
+# Kareen - Controversial Blog For Unconventional Minds  
