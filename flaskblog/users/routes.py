@@ -80,7 +80,9 @@ def reset_request():
     form = RequestResetForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
+        print(user)
         send_reset_email(user)
+        print(send_reset_email(user))
         flash('An email has been sent to you with instructions to reset your password', 'info')
         return redirect(url_for('users.login'))
     return render_template('reset_request.html', title = 'Reset Password', form = form)
@@ -93,11 +95,11 @@ def reset_token(token):
     if user is None:
         flash('This is an invalid or expired token', 'warning')
         return redirect(url_for('users.reset_request'))
-    form = ResetPasswordForm
+    form = ResetPasswordForm()
     if form.validate_on_submit():
         hash_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user.password = hash_password
         db.session.commit()
         flash(f'Your password  has been updated! You can now login', 'success')
         return redirect(url_for('users.login'))
-    return redirect('reset_token.html', title = 'Reset Password', form = form)
+    return render_template('reset_token.html', title = 'Reset Password', form=form)
